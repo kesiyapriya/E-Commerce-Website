@@ -2,20 +2,22 @@ import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
+import RelatedProducts from '../components/RelatedProducts';
 
 const Product = () => {
   const { productId } = useParams();
-  const { products, currency } = useContext(ShopContext);
+  const { products, currency, addToCart} = useContext(ShopContext);
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
 
   const fetchProductData = async () => {
+
     products.map((item) => {
       if (item._id === productId) {
         setProductData(item);
         setImage(item.image[0]);
-        console.log(item);
+        
         return null;
       }
     });
@@ -33,7 +35,7 @@ const Product = () => {
         {/* ------------- Product Images ------------------ */}
 
         <div className="flex-1 flex flex-col-reverse gap-3 sm:flex-row">
-          <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w=[18.7%] w-full">
+          <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full">
             {productData.image.map((item, index) => (
               <img
                 onClick={() => setImage(item)}
@@ -82,12 +84,38 @@ const Product = () => {
               ))}
             </div>
           </div>
+          <button onClick={()=>addToCart(productData._id,size)} className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'>ADD TO CARD</button>
+          <hr className='mt-8 sm:w-4/5' />
+          <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
+            <p>100% Original product.</p>
+            <p>Cash on delivery is available on this product.</p>
+            <p>Easy return and exchange policy within 7 days.</p>
+
+          </div>
         </div>
       </div>
+
+      {/* -------------------Description & Review Section----------- */}
+      <div className='mt-20'>
+        <div className='flex'>
+          <b className='border px-5 py-3 text-sm'>Description</b>
+          <p className='border px-5 py-3 text-sm'>Reviews (122)</p>
+
+        </div>
+        <div className='flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500'>
+         <p>An e-commerce website is an online platform that facilitates the buying and selling of products or services over the internet.it serves as a virtual marketplace where businesses and individuals can showcase their products,interact with customers,and conduct,transaction without the need for a physical presence.E-commerce website have going immense popularity due to their convenience,accessibility,and the global reach they offer.</p>
+         <p>E-commerce websites typically display products or services along with detailed descriptiob,images,prices, and any available variations(e..,sizes,colrs).Each product usually has its own dedicate page with relavant information.</p>
+        </div>
+      </div>
+
+      {/* ------Display Related Product------------ */}
+      <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
+
+
+
     </div>
-  ) : (
-    <div className=" opacity-0"></div>
-  );
-};
+  ) : <div className=" opacity-0"></div>
+  
+}
 
 export default Product;
